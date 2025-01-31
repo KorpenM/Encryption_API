@@ -1,38 +1,52 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 
 namespace EncryptionAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EncryptController : ControllerBase
+    public class EncryptionController : ControllerBase
     {
-        // Endpoint för att kryptera en text
+        // Endpoint för att kryptera text
         [HttpPost("encrypt")]
-        public IActionResult Encrypt([FromBody] string text)
+        public ActionResult<string> Encrypt([FromBody] string plainText)
         {
-            string encrypted = EncryptText(text);
-            return Ok(new { EncryptedText = encrypted });
+            var encrypted = CaesarCipher(plainText, 3); // Skiftar med 3
+            return Ok(encrypted);
         }
 
-        // Endpoint för att avkryptera en text
+        // Endpoint för att avkryptera text
         [HttpPost("decrypt")]
-        public IActionResult Decrypt([FromBody] string text)
+        public ActionResult<string> Decrypt([FromBody] string encryptedText)
         {
-            string decrypted = DecryptText(text);
-            return Ok(new { DecryptedText = decrypted });
+            var decrypted = CaesarCipher(encryptedText, -3); // Skiftar med -3
+            return Ok(decrypted);
         }
 
-        // Enkelt exempel på Caesar-chiffer
-        private string EncryptText(string input)
+        private string CaesarCipher(string input, int shift)
         {
-            int shift = 3; // Flyttar bokstäver tre steg framåt i alfabetet
-            return new string(input.Select(c => (char)(c + shift)).ToArray());
-        }
-
-        private string DecryptText(string input)
-        {
-            int shift = 3; // Flyttar bokstäver tre steg bakåt i alfabetet
-            return new string(input.Select(c => (char)(c - shift)).ToArray());
+            var result = new StringBuilder();
+            foreach (char c in input)
+            {
+                if (char.IsLetter(c))
+                {
+                    char d = (char)(c + shift);
+                    if (char.IsLower(c) && d > 'z' || char.IsUpper(c) && d > 'Z')
+                    {
+                        d = (char)(c - (26 - shift));
+                    }
+                    else if (char.IsLower(c) && d < 'a' || char.IsUpper(c) && d < 'A')
+                    {
+                        d = (char)(c + (26 - shift));
+                    }
+                    result.Append(d);
+                }
+                else
+                {
+                    result.Append(c);  // Behandlar icke-bokstäver
+                }
+            }
+            return result.ToString();
         }
     }
 }
