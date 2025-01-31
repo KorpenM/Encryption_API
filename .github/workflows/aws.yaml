@@ -48,5 +48,5 @@ jobs:
 
       - name: Deploy to AWS Elastic Beanstalk
         run: |
-          eb init -p dotnet core -r us-west-2 EncryptionAPI --region us-west-2
+          eb init -p dotnet core -r eu-north-1 EncryptionAPI --region eu-north-1
           eb deploy
