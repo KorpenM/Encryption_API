@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Text;
+using EncryptionAPI.Services; // Importera Encryptor
 
 namespace EncryptionAPI.Controllers
 {
@@ -7,38 +7,25 @@ namespace EncryptionAPI.Controllers
     [ApiController]
     public class EncryptionController : ControllerBase
     {
-        // Endpoint för att kryptera text
+        private readonly Encryptor _encryptor;
+
+        public EncryptionController(Encryptor encryptor)
+        {
+            _encryptor = encryptor;
+        }
+
         [HttpPost("encrypt")]
         public ActionResult<string> Encrypt([FromBody] string plainText)
         {
-            var encrypted = CaesarCipher(plainText, 3); // Skiftar med 3
+            var encrypted = _encryptor.Encrypt(plainText);
             return Ok(encrypted);
         }
 
-        // Endpoint för att avkryptera text
         [HttpPost("decrypt")]
         public ActionResult<string> Decrypt([FromBody] string encryptedText)
         {
-            var decrypted = CaesarCipher(encryptedText, -3); // Skiftar med -3
+            var decrypted = _encryptor.Decrypt(encryptedText);
             return Ok(decrypted);
-        }
-
-        private string CaesarCipher(string input, int shift)
-        {
-            var result = new StringBuilder();
-            foreach (char c in input)
-            {
-                if (char.IsLetter(c))
-                {
-                    var start = char.IsUpper(c) ? 'A' : 'a';
-                    result.Append((char)((((c + shift) - start + 26) % 26) + start));
-                }
-                else
-                {
-                    result.Append(c); // Behåller andra tecken oförändrade
-                }
-            }
-            return result.ToString();
         }
     }
 }

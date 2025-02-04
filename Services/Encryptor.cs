@@ -1,4 +1,4 @@
-﻿namespace EncryptionAPI
+﻿namespace EncryptionAPI.Services
 {
     public class Encryptor
     {
