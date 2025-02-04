@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
-using Xunit;
 
 namespace EncryptionAPI.Controllers
 {
@@ -29,7 +28,15 @@ namespace EncryptionAPI.Controllers
             var result = new StringBuilder();
             foreach (char c in input)
             {
-
+                if (char.IsLetter(c))
+                {
+                    var start = char.IsUpper(c) ? 'A' : 'a';
+                    result.Append((char)((((c + shift) - start + 26) % 26) + start));
+                }
+                else
+                {
+                    result.Append(c); // Behåller andra tecken oförändrade
+                }
             }
             return result.ToString();
         }
