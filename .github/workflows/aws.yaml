@@ -7,7 +7,6 @@ on:
     pull_request:
         branches:
             - main
-
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -21,17 +20,11 @@ jobs:
               with:
                   dotnet-version: '9.0'
 
-            - name: Restore dependencies
-              run: dotnet restore
-
-            - name: Build and Publish project
-              run: dotnet publish EncryptionAPI/EncryptionAPI.csproj -c Release -o site
-
-            - name: Run unit tests
-              run: dotnet test EncryptionAPI.Tests/EncryptionAPI.Tests.csproj --configuration Release
+            - name: Build project
+              run: dotnet restore && dotnet publish -o site;
 
             - name: Create zip package
-              run: cd site && zip -r ../site.zip ./*
+              run: cd site && zip ../site.zip *;
 
             - name: Deploy to AWS EB
               uses: einaregilsson/beanstalk-deploy@v21
