@@ -5,11 +5,11 @@ namespace EncryptionAPI
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EncryptionController : ControllerBase
+    public class Controller : ControllerBase
     {
         private readonly Encryptor _encryptor;
 
-        public EncryptionController(Encryptor encryptor)
+        public Controller(Encryptor encryptor)
         {
             _encryptor = encryptor;
         }
