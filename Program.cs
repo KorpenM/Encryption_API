@@ -1,13 +1,21 @@
+using EncryptionAPI; 
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Lägg till support för controllers
+// Lägger till support för controllers och dependency injection
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Lägg till Encryptor i DI-container
+builder.Services.AddScoped<Encryptor>();
+
 var app = builder.Build();
 
-// Använd Swagger (API-dokumentation)
+// Använder Swagger för utvecklingsmiljö
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -17,7 +25,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
-// Mappar controllers (gör att våra endpoints fungerar)
+// Mappar controllers (för att endpoints ska fungera)
 app.MapControllers();
 
 app.Run();
