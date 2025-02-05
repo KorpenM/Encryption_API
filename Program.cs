@@ -10,13 +10,10 @@ var app = builder.Build();
 int key = 3;
 var encryptionService = new EncryptionService(key);
 
-// Standardroute för att välkomna användare
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => "Tjena kompis!");
 
-// Endpoint för kryptering
 app.MapGet("/encrypt", (string input) => encryptionService.Encrypt(input));
 
-// Endpoint för avkryptering
 app.MapGet("/decrypt", (string input) => encryptionService.Decrypt(input));
 
 app.Run();
