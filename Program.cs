@@ -1,31 +1,28 @@
-using EncryptionAPI; 
+using EncryptionAPI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Lägger till support för controllers och dependency injection
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// Lägg till Encryptor i DI-container
-builder.Services.AddScoped<Encryptor>();
-
-var app = builder.Build();
-
-// Använder Swagger för utvecklingsmiljö
-if (app.Environment.IsDevelopment())
+class Program
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        var app = builder.Build();
+
+        // Skapar en instans av EncryptionService med en nyckel
+        int key = 3;
+        var encryptionService = new EncryptionService(key);
+
+        // Standardroute för att välkomna användare
+        app.MapGet("/", () => "Hello World!");
+
+        // Endpoint för kryptering
+        app.MapGet("/encrypt", (string input) => encryptionService.Encrypt(input));
+
+        // Endpoint för avkryptering
+        app.MapGet("/decrypt", (string input) => encryptionService.Decrypt(input));
+
+        app.Run();
+    }
 }
-
-app.UseHttpsRedirection();
-app.UseAuthorization();
-
-// Mappar controllers (för att endpoints ska fungera)
-app.MapControllers();
-
-app.Run();
